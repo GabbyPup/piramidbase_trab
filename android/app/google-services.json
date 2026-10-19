@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "673417405254",
+    "project_id": "piramidbase-9ca4a",
+    "storage_bucket": "piramidbase-9ca4a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:673417405254:android:7d34a5b6428adcf50bbb47",
+        "android_client_info": {
+          "package_name": "com.example.piramidbase_trab"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC7xmn8Nl6JJHELVJ8N-Br-ACl_-SAbty0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
