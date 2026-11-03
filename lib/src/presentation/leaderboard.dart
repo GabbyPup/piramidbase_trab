@@ -4,7 +4,7 @@ import 'package:input_quantity/input_quantity.dart';
 
 import '../model/ranking.dart';
 
-class LeaderboardView extends StatefulWidget {
+class BoardScreen extends StatefulWidget {
   final Ranking ranking;
   final bool includeCategoryRanking;
   final bool isReversedRanking; // Highest Score => Worst
@@ -12,7 +12,7 @@ class LeaderboardView extends StatefulWidget {
   final Widget? title;
   final Widget? additionalInformation;
 
-  const LeaderboardView({
+  const BoardScreen({
     required this.ranking,
     this.includeCategoryRanking = false,
     this.isReversedRanking = false,
@@ -22,10 +22,10 @@ class LeaderboardView extends StatefulWidget {
   });
 
   @override
-  State<LeaderboardView> createState() => _LeaderboardViewState();
+  State<BoardScreen> createState() => _BoardScreenState();
 }
 
-class _LeaderboardViewState extends State<LeaderboardView> {
+class _BoardScreenState extends State<BoardScreen> {
   static const String _globalRankingName = 'global';
   late Ranking _currentRanking;
 
@@ -39,7 +39,13 @@ class _LeaderboardViewState extends State<LeaderboardView> {
 
     _currentRanking = widget.ranking;
 
-    _weights.addAll(Map.fromEntries(_currentRanking.rankingCategories.map((indicator) => MapEntry(indicator, 0))));
+    _weights.addAll(
+      Map.fromEntries(
+        _currentRanking.rankingCategories.map(
+          (indicator) => MapEntry(indicator, 0),
+        ),
+      ),
+    );
   }
 
   String getScoreHint() {
@@ -60,18 +66,26 @@ class _LeaderboardViewState extends State<LeaderboardView> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   buildTitle(),
-                  if (widget.includeCategoryRanking) buildRankingSelection(_currentRanking),
-                  if (_selectedRanking == _globalRankingName) buildInformation(_currentRanking),
-                  if (_selectedRanking == _globalRankingName) buildWeightsSelection(),
-                  if (_selectedRanking == _globalRankingName) buildLeaderboardVisualization(_currentRanking),
+                  if (widget.includeCategoryRanking)
+                    buildRankingSelection(_currentRanking),
+                  if (_selectedRanking == _globalRankingName)
+                    buildInformation(_currentRanking),
+                  if (_selectedRanking == _globalRankingName)
+                    buildWeightsSelection(),
+                  if (_selectedRanking == _globalRankingName)
+                    buildLeaderboardVisualization(_currentRanking),
                   if (_selectedRanking != _globalRankingName)
-                    buildCategoryVisualization(_selectedRanking, _currentRanking),
+                    buildCategoryVisualization(
+                      _selectedRanking,
+                      _currentRanking,
+                    ),
                   Tooltip(
                     message: "Copy Ranking",
                     child: Center(
                       child: IconButton(
-                        onPressed: () async =>
-                            await Clipboard.setData(ClipboardData(text: _currentRanking.copiedRanking())),
+                        onPressed: () async => await Clipboard.setData(
+                          ClipboardData(text: _currentRanking.copiedRanking()),
+                        ),
                         icon: const Icon(Icons.copy),
                       ),
                     ),
@@ -86,7 +100,11 @@ class _LeaderboardViewState extends State<LeaderboardView> {
   }
 
   Widget buildTitle() {
-    return widget.title ?? const Text('Leaderboard', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold));
+    return widget.title ??
+        const Text(
+          'Leaderboard',
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        );
   }
 
   Widget buildInformation(Ranking ranking) {
@@ -107,7 +125,10 @@ class _LeaderboardViewState extends State<LeaderboardView> {
                   ? 'Higher ranking is worse (ascending)\n'
                   : 'Higher ranking is better (descending)\n',
             ),
-            const Text('Categories:', style: TextStyle(fontWeight: FontWeight.bold)),
+            const Text(
+              'Categories:',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
             ...ranking.categories.map((dataKey) => Text(dataKey)),
           ],
         ),
@@ -126,7 +147,8 @@ class _LeaderboardViewState extends State<LeaderboardView> {
                 Text("${entry.key}:"),
                 const SizedBox(width: 5),
                 Tooltip(
-                  message: "${Ranking.getScoreMultiplier(entry.value).toStringAsFixed(1)}x counted",
+                  message:
+                      "${Ranking.getScoreMultiplier(entry.value).toStringAsFixed(1)}x counted",
                   child: InputQty.int(
                     initVal: entry.value,
                     maxVal: 10,
@@ -136,7 +158,9 @@ class _LeaderboardViewState extends State<LeaderboardView> {
                     onQtyChanged: (dynamic qty) {
                       setState(() {
                         _weights[entry.key] = qty;
-                        _currentRanking = _currentRanking.updateWeights(_weights);
+                        _currentRanking = _currentRanking.updateWeights(
+                          _weights,
+                        );
                       });
                     },
                   ),
@@ -157,9 +181,19 @@ class _LeaderboardViewState extends State<LeaderboardView> {
           value: _selectedRanking,
           items:
               ranking.rawCategories
-                  .map((category) => DropdownMenuItem<String>(value: category, child: Text(category)))
+                  .map(
+                    (category) => DropdownMenuItem<String>(
+                      value: category,
+                      child: Text(category),
+                    ),
+                  )
                   .toList()
-                ..add(DropdownMenuItem(value: _globalRankingName, child: Text(_globalRankingName))),
+                ..add(
+                  DropdownMenuItem(
+                    value: _globalRankingName,
+                    child: Text(_globalRankingName),
+                  ),
+                ),
           onChanged: (String? value) {
             setState(() {
               _selectedRanking = value ?? _selectedRanking;
@@ -172,7 +206,11 @@ class _LeaderboardViewState extends State<LeaderboardView> {
 
   Widget buildLeaderboardVisualization(Ranking ranking) {
     final leaderboardRanking = ranking.getLeaderboardRanking();
-    return buildRankingVisualization(ranking, leaderboardRanking, (entry) => entry.$3.toStringAsFixed(1));
+    return buildRankingVisualization(
+      ranking,
+      leaderboardRanking,
+      (entry) => entry.$3.toStringAsFixed(1),
+    );
   }
 
   Widget buildCategoryVisualization(String category, Ranking ranking) {
@@ -182,7 +220,11 @@ class _LeaderboardViewState extends State<LeaderboardView> {
       return Text("ERROR: No ranking found for category $category!");
     }
 
-    return buildRankingVisualization(ranking, categoryRanking, (entry) => entry.$2.metrics[category].toString());
+    return buildRankingVisualization(
+      ranking,
+      categoryRanking,
+      (entry) => entry.$2.metrics[category].toString(),
+    );
   }
 
   Widget buildRankingVisualization(
@@ -223,21 +265,36 @@ class _LeaderboardViewState extends State<LeaderboardView> {
                       leading: Container(
                         width: 30,
                         height: 30,
-                        decoration: BoxDecoration(color: _getRankColor(place), shape: BoxShape.circle),
+                        decoration: BoxDecoration(
+                          color: _getRankColor(place),
+                          shape: BoxShape.circle,
+                        ),
                         child: Center(
                           child: Text(
                             '$place',
-                            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                       ),
                       title: Text(name, style: const TextStyle(fontSize: 18)),
                       subtitle: place == 0
-                          ? Text(getScoreHint(), style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w400))
+                          ? Text(
+                              getScoreHint(),
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            )
                           : null,
                       trailing: Text(
                         score.toString(),
-                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ),

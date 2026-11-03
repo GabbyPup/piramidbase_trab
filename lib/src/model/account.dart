@@ -8,9 +8,9 @@ class Account {
 
   final String? displayName;
 
-  final num starScore = 0.0;
+  final num starScore;
 
-  final int rank = 0;
+  final int rank;
 
   Account copyWith({String? username, String? displayName, num? starScore, int? rank}) =>
       Account(
