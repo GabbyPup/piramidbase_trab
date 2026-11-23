@@ -1,4 +1,3 @@
-import 'package:firebase_database/firebase_database.dart';
 
 /// A user account with associated metadata.
 class Account {

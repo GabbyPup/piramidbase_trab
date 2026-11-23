@@ -37,7 +37,7 @@ final class _RankingResult {
   _RankingResult.leaderboard(this.categoryRankingMap, this.groupRankingMap, this.leaderboard)
     : calculatedLeaderboardRanking = calculateLeaderboardRanking(leaderboard);
 
-  static List<(Place, RankingEntry, Score)> calculateLeaderboardRanking(final Map<RankingEntry, num> leaderboard) {
+  static List<(Place, RankingEntry, Score)> calculateLeaderboardRanking(Map<RankingEntry, num> leaderboard) {
     // Sort by score descending (highest first)
     final sortedEntries = leaderboard.entries.sorted((e1, e2) => e1.value.compareTo(e2.value)).reversed.toList();
 
